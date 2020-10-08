@@ -1,0 +1,1 @@
+some text {$tagName var123 12.34 "a string"$}

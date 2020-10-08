@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+	<head>		
+		<style>
+			body {background-color: aquamarine ;}
+			h1   {color: blue;font-family: verdana;}
+			h3   {color: black;font-family: arial;text-decoration: underline;}
+			h6   {color: darkblue;font-family: arial;}
+			p    {color: red;font-family: verdana;}
+			img { border: 1px solid red;}
+		</style>
+
+
+
+		<meta charset="UTF-8">
+		<title>Galerija slika</title>
+		<script type="text/javascript"><!--			
+		  function dodajGumbe() {
+			var xmlhttp;
+			
+			if (window.XMLHttpRequest) {
+				// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			xmlhttp.onreadystatechange = function() {
+				if(xmlhttp.readyState==4 && xmlhttp.status==200) {
+					var text = xmlhttp.responseText;
+					var tags = JSON.parse(text);
+					var html = "";
+					for(var i=0; i<tags.length; i++) {
+						html += "<button onclick = \"prikaziSlike(this.firstChild.textContent);\">" + tags[i] + "</button>";
+					}
+					document.getElementById("tagovi").innerHTML = html;
+				}
+			}
+			xmlhttp.open("GET", "servlets/tagsGetter", true);
+			xmlhttp.send();
+		  }
+
+		  function prikaziSlike(tag) {
+		  	var xmlhttp;
+			console.log(tag);
+			if (window.XMLHttpRequest) {
+				// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			xmlhttp.onreadystatechange = function() {
+				if(xmlhttp.readyState==4 && xmlhttp.status==200) {
+					var text = xmlhttp.responseText;
+					var imgs = JSON.parse(text);
+					var html = "";
+					for(var i=0; i<imgs.length; i++) {
+						html += "<img onclick=\"otvoriSliku(this.src)\" src=\"" + imgs[i] + "\">";
+					}
+					document.getElementById("thumbnails").innerHTML = html;
+					document.getElementById("imageBig").innerHTML = "";
+				}
+			}
+			xmlhttp.open("GET", "servlets/thumbnails?tag="+tag, true);
+			xmlhttp.send();
+		  }
+
+		  function otvoriSliku(thumbnailSrc) {
+		   	var xmlhttp;
+
+			if (window.XMLHttpRequest) {
+				// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			} else {
+				// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			xmlhttp.onreadystatechange = function() {
+				if(xmlhttp.readyState==4 && xmlhttp.status==200) {
+					var text = xmlhttp.responseText;
+					var imgData = JSON.parse(text);
+					var html = "";
+					
+					html += "<img class=\"fit\" src=\"" + imgData.src + "\">";
+					html += "<h3>"+imgData.name+"</h3>";
+					html += "<h6>Tags: "+imgData.tags+"</h6>";
+
+					document.getElementById("imageBig").innerHTML = html;
+				}
+			}
+			xmlhttp.open("GET", "servlets/image?thmbsrc="+thumbnailSrc, true);
+			xmlhttp.send();
+		   }
+
+		//--></script>
+	</head>
+	<body>
+	
+		<h1>Galerija slika</h1>
+		
+		<p>Pritiskom na jedan od sljedećih tagova, dobit ćete listu slika koje sadrže taj tag.</p>
+		
+		<div id="tagovi">&nbsp;</div>
+
+		<div id="imageBig">&nbsp;</div>
+
+		<div id="thumbnails">&nbsp;</div>
+		
+		<script type="text/javascript">
+    		dodajGumbe();
+  		</script>
+	</body>
+</html>

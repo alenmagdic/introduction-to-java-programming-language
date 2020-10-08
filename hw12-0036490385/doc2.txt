@@ -1,0 +1,7 @@
+This is Example 2.
+	{$ FOR j x y 15 $}
+ 		j = {$= j $}
+ 		{$ FOR i x_2 y_2 2 $}
+ 			i = {$=i$}
+		{$END$}
+	{$END$}And this is the end of Example 2!
